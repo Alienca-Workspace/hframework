@@ -13,14 +13,31 @@ export class Application implements ApplicationImpl{
     async handle(request: Request): Promise<Response> {
         const url = new URL(request.url);
         const result = this.router.routes[url.pathname]
+
+        // check the content-type
+        if (request.headers.get("content-type") === null){
+            return new Response("Content Type Not Found, Please add content-type: application/x-www-form-urlencoded", {
+                status: 400,
+                headers: {
+                    "content-type": "application/json",
+                }
+            })
+        }
+
         if (result === undefined){
-            return new Response("Not Found", {
+            return new Response("Route Not Found", {
                 status: 404,
+                headers: {
+                    "content-type": "application/json",
+                }
             })
         }
         if (request.method.toUpperCase() != result["method"]){
             return new Response("Method Not Allowed", {
                 status: 500,
+                headers: {
+                    "content-type": "application/json",
+                }
             })
         }
         return await result.func(request);
