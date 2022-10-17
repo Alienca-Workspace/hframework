@@ -3,22 +3,58 @@ import {RedisModel} from "../../storage/redis/redis.ts";
 import {RabbitmqModel} from "../../storage/rabbitmq/rabbitmq.ts";
 
 const pgModel = new PostgresModel()
-const redisModel = new RedisModel()
-const rabbitmqModel = new RabbitmqModel()
+// const redisModel = new RedisModel()
+// const rabbitmqModel = new RabbitmqModel()
 
 
-export const getMemberInfo = async (platform: string,username: string):Promise<object> => {
+export const getMemberInfo = async (platform: string,username: string):Promise<any> => {
 
-    const pgClient = await pgModel.getInstance().getPoolClient()
-    const redisClient = await redisModel.getInstance().getConnection()
-    const rabbitmqClient = rabbitmqModel.getInstance()
+    const pgClient = await pgModel.getPoolClient()
+    await pgClient.connect()
 
-    const result = await pgClient.queryObject(
-        "select id,password from member.member where username = $1 limit 1",
-        ["ming"]
-    )
+    try{
+        await pgClient.queryObject(
+            "select id,password from member.member where username = $1 limit 1",
+            ["ming"]
+        )
 
-    console.log(result)
+        await pgClient.queryObject(
+            "insert into member.member(username,password,salt,email) values($1,$2,$3,$4)",
+            ["liyang","654321","000000000","liyang@6.com"]
+        )
+
+        const result = await pgClient.queryObject(
+            "insert into member.member(username,password,salt,email) values($1,$2,$3,$4)",
+            ["xiaoming","654321","000000000","liyang@6.com"]
+        )
+
+        console.log(result.rows[0])
+
+    }finally {
+        await pgClient.end()
+    }
+
+    return {
+        platform:platform,
+        username:username
+    }
+}
+
+
+export const setMemberInfo = async (platform: string,username: string):Promise<any> => {
+
+    const pgClient = await pgModel.getPoolClient()
+    await pgClient.connect()
+
+    try{
+
+        const result = await pgClient.queryObject(
+            "insert into member.member(username,password,salt,email) values($1,$2,$3,$4)",
+            ["liyang","654321","000000000","liyang@6.com"]
+        )
+    }finally {
+        await pgClient.end()
+    }
 
     return {
         platform:platform,

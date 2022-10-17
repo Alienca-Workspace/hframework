@@ -1,6 +1,6 @@
 import {createLengthExtraData, validate} from "../../utils/request.ts";
 import {error, success} from "../../utils/response.ts";
-import {getMemberInfo} from "../service/member.ts";
+import {getMemberInfo, setMemberInfo} from "../service/member.ts";
 
 export const signIn = async (request:Request):Promise<Response> => {
     const formData = await request.formData()
@@ -21,5 +21,6 @@ export const signIn = async (request:Request):Promise<Response> => {
     const platform:string = <string>formData.get("platform")
 
     const result = await getMemberInfo(platform,username)
+    await setMemberInfo(platform,username)
     return success("sign in successfully",result)
 }
