@@ -1,0 +1,6 @@
+version: "3.5"
+services:
+  hframework-svc-user:
+    image: unclehong/hframework-svc-user:latest
+    deploy:
+      replicas: 3

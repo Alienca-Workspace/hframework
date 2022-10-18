@@ -2,7 +2,7 @@ import {PostgresModel} from "../../storage/postgres/postgres.ts";
 import {RedisModel} from "../../storage/redis/redis.ts";
 import {RabbitmqModel} from "../../storage/rabbitmq/rabbitmq.ts";
 
-const pgModel = new PostgresModel()
+const pgModel = new PostgresModel("center","pass4mingming","center","127.0.0.1",5432)
 // const redisModel = new RedisModel()
 // const rabbitmqModel = new RabbitmqModel()
 
