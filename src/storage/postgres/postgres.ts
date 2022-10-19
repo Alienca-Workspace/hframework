@@ -12,7 +12,7 @@ export class PostgresModel{
     constructor(user: string,password: string,database: string,hostname: string,port: number) {
         this.user = user
         this.password = password
-        this.database = password
+        this.database = database
         this.hostname = hostname
         this.port = port
     }

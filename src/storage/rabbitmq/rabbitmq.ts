@@ -1,31 +1,34 @@
-import { connect } from "https://deno.land/x/amqp@v0.17.0/mod.ts";
+import {AmqpConnection, connect} from "https://deno.land/x/amqp@v0.17.0/mod.ts";
 
 export class RabbitmqModel{
-    static _instance:any = null
+    static _connection:any = null
+    hostname: string
 
-    constructor() {}
+    constructor(hostname:string) {
+        this.hostname = hostname
+    }
 
-    getInstance():RabbitmqModel{
-        if(RabbitmqModel._instance === null){
-            RabbitmqModel._instance = new RabbitmqModel()
+    async getConnection():Promise<AmqpConnection>{
+        if(RabbitmqModel._connection === null){
+            RabbitmqModel._connection = await connect({hostname:this.hostname})
         }
-        return <RabbitmqModel>RabbitmqModel._instance
+        return RabbitmqModel._connection
     }
 
     async publish(queueName: string,data:any){
-        const connection = await connect({hostname:"172.16.33.99"})
+        const connection = await this.getConnection()
         const channel = await connection.openChannel()
-        await channel.declareQueue({queue: queueName})
+        await channel.declareQueue({queue: queueName,durable: true})
         await channel.publish(
             {routingKey:queueName},
-            {contentType:"application/json"},
+            {contentType:"application/json",deliveryMode:2},
             new TextEncoder().encode(JSON.stringify(data))
         )
         await connection.close()
     }
 
     async consume(queueName:string){
-        const connection = await connect({hostname:"172.16.33.99"})
+        const connection = await this.getConnection()
         const channel = await connection.openChannel()
         await channel.declareQueue({queue: queueName})
         await channel.consume(

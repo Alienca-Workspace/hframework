@@ -3,14 +3,19 @@ import {RedisModel} from "../../storage/redis/redis.ts";
 import {RabbitmqModel} from "../../storage/rabbitmq/rabbitmq.ts";
 
 const pgModel = new PostgresModel("center","pass4mingming","center","127.0.0.1",5432)
-// const redisModel = new RedisModel()
-// const rabbitmqModel = new RabbitmqModel()
+const redisModel = new RedisModel("127.0.0.1",6379)
+const rabbitmqModel = new RabbitmqModel("127.0.0.1")
 
 
 export const getMemberInfo = async (platform: string,username: string):Promise<any> => {
 
     const pgClient = await pgModel.getPoolClient()
     await pgClient.connect()
+
+    const redisConnection = await redisModel.getConnection()
+    await redisConnection.set("email","f.@gmail.com")
+
+    await rabbitmqModel.publish("product_channel",{ name:"照相机1",price: 50000.19 })
 
     try{
         await pgClient.queryObject(

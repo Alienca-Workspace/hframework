@@ -1,22 +1,23 @@
 import { connect,Redis } from "https://deno.land/x/redis@v0.27.1/mod.ts";
 
 export class RedisModel{
-    static _instance:any = null
+    static _connection:any = null
+    hostname: string
+    port: number
 
-    constructor() {}
-
-    getInstance():RedisModel{
-        if(RedisModel._instance === null){
-            RedisModel._instance = new RedisModel()
-        }
-        return <RedisModel>RedisModel._instance
+    constructor(hostname: string,port: number) {
+        this.hostname = hostname
+        this.port = port
     }
 
     async getConnection():Promise<Redis>{
-        return await connect({
-            hostname: "172.16.33.99",
-            port: 6379
-        })
+        if(RedisModel._connection === null){
+            RedisModel._connection = await connect({
+                hostname: this.hostname,
+                port: this.port
+            })
+        }
+        return RedisModel._connection
     }
 
 }
