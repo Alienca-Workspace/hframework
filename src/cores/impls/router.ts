@@ -1,3 +1,3 @@
-export interface Router{
-    routes: any
+export interface Router {
+	routes: any;
 }

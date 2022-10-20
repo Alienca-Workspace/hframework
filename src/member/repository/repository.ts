@@ -1,5 +1,3 @@
-const getMemberInfo = async ():Promise<object> => {
-    return {
-
-    }
-}
+const getMemberInfo = async (): Promise<object> => {
+	return {};
+};
