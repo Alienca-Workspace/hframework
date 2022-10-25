@@ -6,11 +6,11 @@ const pgModel = new PostgresModel(
 	'center',
 	'pass4mingming',
 	'center',
-	'127.0.0.1',
+	'159.138.172.203',
 	5432,
 );
 const redisModel = new RedisModel('127.0.0.1', 6379);
-const rabbitmqModel = new RabbitmqModel('127.0.0.1');
+// const rabbitmqModel = new RabbitmqModel('127.0.0.1');
 
 export const getMemberInfo = async (
 	platform: string,
@@ -22,10 +22,10 @@ export const getMemberInfo = async (
 	const redisConnection = await redisModel.getConnection();
 	await redisConnection.set('email', 'f.@gmail.com');
 
-	await rabbitmqModel.publish('product_channel', {
-		name: '照相机1',
-		price: 50000.19,
-	});
+	// await rabbitmqModel.publish('product_channel', {
+	// 	name: '照相机1',
+	// 	price: 50000.19,
+	// });
 
 	try {
 		await pgClient.queryObject(
